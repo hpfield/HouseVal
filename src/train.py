@@ -43,11 +43,11 @@ sys.path.append(src_dir)
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="linear", help="Model to train")
-    parser.add_argument("--train_data", type=str, default="train_categorical_no_missing_vals_mean_imputed.csv", help="Data to train on")
-    parser.add_argument("--test_data", type=str, default="test_categorical_no_missing_vals_mean_imputed.csv", help="Data to test on")
+    parser.add_argument("--train_data", type=str, default="train_numerical_mean_imputed.csv", help="Data to train on")
+    parser.add_argument("--test_data", type=str, default="test_numerical_mean_imputed.csv", help="Data to test on")
     parser.add_argument("--epochs", type=int, default=1000, help="Number of epochs to train for")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size for training")
-    parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate for training")
+    parser.add_argument("--learning_rate", type=float, default=0.01, help="Learning rate for training")
     parser.add_argument("--architecture", type=str, default="mlp", help="Architecture of the model")
     return parser.parse_args()
 
@@ -71,10 +71,11 @@ def main():
     logger.info(f"Loading data from {args.test_data}")
     test_data = pd.read_csv("data/" + args.test_data)
 
-    X_test = test_data
+    X = X.drop("Id", axis=1)
+    X_test = test_data.drop("Id", axis=1)
 
     # Split the data into training and validation sets
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=100)
 
     # Standardize the data
     scaler = StandardScaler()
@@ -97,59 +98,68 @@ def main():
     
     input_size = X_train.shape[1]
 
-    # Initialize the model
-    # if args.model == "mlp":
-    model = MLPRegressor(input_size=input_size, hidden_layers=[100, 50], output_size=1)
+    # Use RandomForestRegressor
+    if args.model == "random_forest":
+        model = RandomForestRegressor(n_estimators=100, random_state=100)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_val)
+        mse = mean_squared_error(y_val, y_pred)
+        rmse = np.sqrt(mse)
+        logger.info(f"Root mean squared error: {rmse}")
+    elif args.model == "mlp":
+        model = MLPRegressor(input_size=input_size, hidden_layers=[100, 50], output_size=1)
 
+        criterion = nn.MSELoss()
 
-    criterion = nn.MSELoss()
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+        writer = SummaryWriter()
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
-    writer = SummaryWriter()
+        for epoch in range(args.epochs):
+            model.train()
+            for X_batch, y_batch in train_loader:
+                y_pred = model(X_batch)
+                loss = criterion(y_pred, y_batch.view(-1, 1))
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 
-    for epoch in range(args.epochs):
-        model.train()
-        for X_batch, y_batch in train_loader:
-            y_pred = model(X_batch)
-            loss = criterion(y_pred, y_batch.view(-1, 1))
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+            model.eval()
+            if (epoch+1) % 100 == 0:
+                with torch.no_grad():
+                    loss = 0
+                    for X_batch, y_batch in train_loader:
+                        y_pred = model(X_batch)
+                        loss += criterion(y_pred, y_batch.view(-1, 1))
+                    loss /= len(train_loader)
+                    writer.add_scalar("Loss/train", loss, epoch)
+                    print(f"Epoch {epoch+1}, train: \t\t{loss}")
+                    val_loss = 0
+                    for X_val_batch, y_val_batch in val_loader:
+                        y_val_pred = model(X_val_batch)
+                        val_loss += criterion(y_val_pred, y_val_batch.view(-1, 1))
+                    val_loss /= len(val_loader)
+                    writer.add_scalar("Loss/val", val_loss, epoch)
+                    print(f"Epoch {epoch+1}, val: \t\t{val_loss}")
+                
+                # Save checkpoint
+                torch.save(model, f"models/{args.architecture}_{args.model}_{time.strftime('%Y_%m_%d_%H:%M:%S')}_epoch{epoch+1}.pt")
 
-        model.eval()
-        if (epoch+1) % 100 == 0:
-            with torch.no_grad():
-                loss = 0
-                for X_batch, y_batch in train_loader:
-                    y_pred = model(X_batch)
-                    loss += criterion(y_pred, y_batch.view(-1, 1))
-                loss /= len(train_loader)
-                writer.add_scalar("Loss/train", loss, epoch)
-                print(f"Epoch {epoch+1}, train: \t\t{loss}")
-                val_loss = 0
-                for X_val_batch, y_val_batch in val_loader:
-                    y_val_pred = model(X_val_batch)
-                    val_loss += criterion(y_val_pred, y_val_batch.view(-1, 1))
-                val_loss /= len(val_loader)
-                writer.add_scalar("Loss/val", val_loss, epoch)
-                print(f"Epoch {epoch+1}, val: \t\t{val_loss}")
-            
-            # Save checkpoint
-            torch.save(model, f"models/{args.architecture}_{args.model}_{time.strftime('%Y_%m_%d_%H:%M:%S')}_epoch{epoch+1}.pt")
-
-    writer.close()
+        writer.close()
 
     # Make predictions
     logger.info("Making predictions")
-    y_pred = model(X_val)
+    # y_pred = model(X_val)
+    y_pred = model.predict(X_val)
 
     # Evaluate the model
+    # Use detached numpy arrays
     mse = mean_squared_error(y_val, y_pred)
     rmse = np.sqrt(mse)
     logger.info(f"Root mean squared error: {rmse}")
 
     # Make predictions on the test set
-    y_pred_test = model(X_test)
+    # y_pred_test = model(X_test)
+    y_pred_test = model.predict(X_test)
 
     # Save the predictions using cols "Id" and "SalePrice" and include timestamp
     logger.info("Saving predictions")
