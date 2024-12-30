@@ -51,18 +51,17 @@ Predicting house prices is a classic regression problem frequently used to asses
 
 ### Key Files & Directories
 
-
-1. **notebooks/eda.ipynb** Performs exploratory data analysis to uncover relationships, distributions, missing data patterns, and potential outliers. Visualisations include histograms, box plots, pairplots, correlation heatmaps, and missing-value plots.
-2. **notebooks/feature_engineering.ipynb** Demonstrates feature engineering workflows, including:
-   * Handling categorical variables via one-hot-encoding or ordinal mappings
-   * Combining multiple features (e.g., total square footage)
-   * Creating new features (e.g., date sold, binary flags for porches/pools)
-   * Imputation (median, mode) for missing data
-3. **notebooks/initial_data_separation.ipynb** Establishes data separation steps, ensuring training and test sets are clearly demarcated and that relevant transformations are consistently applied. Also documents how columns with high missingness or irrelevance may be dropped.
-4. **src/train.py** A PyTorch-based training script that sets up an MLP architecture, trains it with a configurable number of epochs and learning rate, and logs the results. Outputs final trained model and predictions for submission.
-5. **src/train_sklearn.py** A scikit-learn-based training pipeline that systematically evaluates multiple regression models (Linear, Random Forest, Gradient Boosting, XGBoost, etc.). Uses random splits for validation, standardised features, and logs the RMSE to identify the best model.
-6. **src/train_predict.py** An alternative scikit-learn workflow that shows how to quickly train multiple models (e.g., LinearRegression, RandomForestRegressor, AdaBoostRegressor, XGBRegressor) and generate Kaggle submission files.
-7. **src/train_simple.py** A more lightweight approach for scikit-learn model testing, focusing on a smaller subset of models with minimal overhead (useful for quick experiments).
+* **notebooks/eda.ipynb** Performs exploratory data analysis to uncover relationships, distributions, missing data patterns, and potential outliers. Visualisations include histograms, box plots, pairplots, correlation heatmaps, and missing-value plots.
+* **notebooks/feature_engineering.ipynb** Demonstrates feature engineering workflows, including:
+  * Handling categorical variables via one-hot-encoding or ordinal mappings
+  * Combining multiple features (e.g., total square footage)
+  * Creating new features (e.g., date sold, binary flags for porches/pools)
+  * Imputation (median, mode) for missing data
+* **notebooks/initial_data_separation.ipynb** Establishes data separation steps, ensuring training and test sets are clearly demarcated and that relevant transformations are consistently applied. Also documents how columns with high missingness or irrelevance may be dropped.
+* **src/train.py** A PyTorch-based training script that sets up an MLP architecture, trains it with a configurable number of epochs and learning rate, and logs the results. Outputs final trained model and predictions for submission.
+* **src/train_sklearn.py** A scikit-learn-based training pipeline that systematically evaluates multiple regression models (Linear, Random Forest, Gradient Boosting, XGBoost, etc.). Uses random splits for validation, standardised features, and logs the RMSE to identify the best model.
+* **src/train_predict.py** An alternative scikit-learn workflow that shows how to quickly train multiple models (e.g., LinearRegression, RandomForestRegressor, AdaBoostRegressor, XGBRegressor) and generate Kaggle submission files.
+* **src/train_simple.py** A more lightweight approach for scikit-learn model testing, focusing on a smaller subset of models with minimal overhead (useful for quick experiments).
 
 
 ## Machine Learning Workflow Highlights
