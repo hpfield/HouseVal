@@ -1,2 +1,6 @@
 concat.py
 concatenated_files.txt
+notebooks/initial_data_separation.py
+notebooks/feature_engineering.py
+notebooks/eda.py
+notebooks/copy_data.py
