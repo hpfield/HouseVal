@@ -2,7 +2,7 @@
 
 **[Kaggle Competition Link](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/overview)**
 
-This repository contains a complete end-to-end machine learning workflow aimed at predicting house sale prices given 79 explanatory variables from the Ames Housing dataset. The goal is to demonstrate proficiency in building scalable and reproducible machine learning pipelines using common industry practices.
+This repository contains an end-to-end ML workflow aimed at predicting house sale prices given 79 explanatory variables from the Ames Housing dataset. The goal is to demonstrate proficiency in building machine learning pipelines using common industry practices.
 
 
 ## Project Overview
