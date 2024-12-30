@@ -89,10 +89,6 @@ Predicting house prices is a classic regression problem frequently used to asses
 4. **Evaluation & Validation**
    * Leveraged train-validation splits for unbiased performance estimates.
    * Monitored Root Mean Squared Error (RMSE) to align with Kaggle’s evaluation metric.
-5. **Reproducible Pipeline**
-   * Scripts in `src/` illustrate how to load data, transform it consistently, train models, and export predictions.
-   * Logging is used to record training progress and final performance.
-   * Final output predictions are saved in `submissions/` with time-stamped filenames.
 
 
 ## Performance
