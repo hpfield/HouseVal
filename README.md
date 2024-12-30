@@ -11,6 +11,7 @@ Predicting house prices is a classic regression problem frequently used to asses
 
 
 
+
 1. **Data Acquisition & Organisation**
 2. **Exploratory Data Analysis (EDA)**
 3. **Feature Engineering & Data Cleaning**
@@ -42,7 +43,7 @@ Predicting house prices is a classic regression problem frequently used to asses
 │   ├── train_simple.py       # Simple scikit-learn training approach
 │   └── train_sklearn.py      # Unified scikit-learn training pipeline
 ├── submissions/              # Model predictions to upload on Kaggle
-├── concat.py                 # Utility script to concatenate or clean files
+├── environment.yml           # Packages and conda environment
 └── README.md                 # Project documentation
 ```
 
@@ -70,6 +71,7 @@ Predicting house prices is a classic regression problem frequently used to asses
 
 
 ## Machine Learning Workflow Highlights
+
 
 
 
