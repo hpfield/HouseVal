@@ -93,7 +93,7 @@ Predicting house prices is a classic regression problem frequently used to asses
 
 ## Performance
 
-Depending on the model, final Kaggle submissions reached an RMSE score of around 0.13–0.14 (as evaluated by the log-based metric on Kaggle). While not state-of-the-art, this performance is solid for a straightforward pipeline and demonstrates effective use of:
+Depending on the model, final Kaggle submissions reached an RMSE score of around 0.13–0.14 (as evaluated by the log-based metric on Kaggle). This performance is solid for a straightforward pipeline and demonstrates effective use of:
 
 * Feature engineering best practices
 * Ensembling methods (Random Forest, Gradient Boosting, XGBoost)
